@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Main Page</title>
+    <script src="simple.js"> </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="test.js"> </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+    Upload An Excel File </br>
+    </br>
+    </br>
+    <input type="file" id="input" /> </br>
+    </br>
+
+
+    <!-- <button onclick="sortByPrice()"> Sort By Price </button> -->
+
+
+    <!-- <button onclick="sortByPrice()"> sort by price </button> -->
+    <!-- <select id="mySelection" onchange="filterSupplier()">  Supplier
+<option value="Xoom Energy"> Xoom Energy </option>
+<option value="Direct Energy"> Direct Energy	</option>
+<option value="Just Energy"> just Energy </option>
+<option value="Hudson Energy"> hudson Energy	</option>
+    </select> -->
+
+
+    <select id="myutilities" onchange="filterutilities()">
+        <option value="" style="display: none"> Select </option>
+    </select>
+
+    <select id="buisness" onchange="filterbuisness()">
+        <option value="" style="display: none"> Select </option>
+    </select>
+
+
+
+    <!-- <button onclick="sortSuppliers()"> sort by suppliers </button> -->
+
+    <!-- <select id="myprice" onchange="filterPrice()">  price
+        <option value="1 c/kWh"> 1 c/kWh </option>
+        <option value="2 c/kWh"> 2 c/kWh	</option>
+        <option value="3 c/kWh"> 3 c/kWh </option>
+        <option value="4 c/kWh"> 4 c/kWh	</option>
+        <option value="5 c/kWh"> 5 c/kWh</option>
+        <option value="6 c/kWh"> 6 c/kWh	</option>
+        <option value="7 c/kWh"> 7 c/kWh</option>
+        <option value="8 c/kWh"> 8 c/kWh	</option>
+        <option value="9 c/kWh"> 9 c/kWh	</option>
+        <option value="10 c/kWh"> 10 c/kWh</option>
+        <option value="11 c/kWh"> 11 c/kWh	</option>
+        <option value="12 c/kWh"> 12 c/kWh</option>
+        <option value="13 c/kWh"> 13 c/kWh	</option>
+        </select> -->
+
+    </br>
+
+
+    </div>
+
+
+    </br>
+    </br>
+    </br>
+
+
+    <div>
+
+        <div align="center"> </div>
+
+        <div id="demo"> </div>
+
+        <table class="table table-hover " align="center" id="mydata" border="1">
+
+        </table>
+    </div>
+    <script> 
+
+        // displayTable();
+
+
+        var data = {};
+        const input = document.getElementById('input');
+        input.addEventListener('change', () => {
+            readXlsxFile(input.files[0]).then((rows) => {
+                data = rows;
+                data = { result: rows }
+                console.log(data)
+                console.log(JSON.stringify(data))
+                download(JSON.stringify(rows), 'data.json', 'json')
+                getSelectBoxValues(rows);
+                // function Comparator(a, b, c, d, e) {
+                //     if (a[0] < b[0] && a[1] < b[1] && a[2] < b[2] && a[3] < b[3] && a[4] < b[4]) return -1;
+                //     if (a[0] < b[0] && a[1] < b[1] && a[2] < b[2] && a[3] < b[3] && a[4] < b[4]) return 1;
+                //     return 0;
+                // }
+
+                // var arr = data.result;
+                // myArray = arr.sort(Comparator);
+                // console.log(myArray);
+                displayTable(rows);
+
+            })
+        })
+
+        function getSelectBoxValues(pareantArr) {
+            var utilityNames = [];
+            var buisnessSize = [];
+            pareantArr.map(function (childArr) {
+                if (!utilityNames.includes(childArr[1])) {
+                    utilityNames.push(childArr[1])
+                }
+                if (!buisnessSize.includes(childArr[2])) {
+                    buisnessSize.push(childArr[2])
+                }
+            })
+
+            utilityNames.shift();
+            buisnessSize.shift();
+            utilityNames.push("I don't know or see my Utility");
+
+            $.each(utilityNames, function (i, el) {
+                $('#myutilities').append($('<option>', {
+                    value: el,
+                    text: el
+                }));
+            });
+
+            $.each(buisnessSize, function (i, el) {
+                $('#buisness').append($('<option>', {
+                    value: el,
+                    text: el
+                }));
+            });
+
+            console.info(utilityNames);
+            console.info(buisnessSize);
+        }
+
+        function download(content, fileName, contentType) {
+            var a = document.createElement("a");
+            var file = new Blob([content], { type: 'application/json' });
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        function displayTable(arr) {
+            var table = document.getElementById('mydata');
+            table.innerHTML = '';
+            if (arr.length == 1) {
+                var row = table.insertRow();
+                var cell0 = row.insertCell(0);
+                cell0.innerHTML = arr[0];
+            }
+
+            else {
+                table.innerHTML = '';
+                arr.forEach(function (element) {
+                    var row = table.insertRow();
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
+                    var cell3 = row.insertCell(3);
+                    var cell4 = row.insertCell(4);
+
+                    cell0.innerHTML += element[0];
+                    cell1.innerHTML += element[1];
+                    cell2.innerHTML += element[2];
+                    cell3.innerHTML += element[3];
+                    cell4.innerHTML += element[4];
+
+                });
+
+            }
+        }
+
+        function loadJSON(callback) {
+
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', 'test.json', true);
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState === 4 && xobj.status === "200") {
+                    callback(xobj.responseText);
+                }
+            };
+
+        }
+
+        loadJSON(function (response) {
+            // Parse JSON string into object
+            var actual_JSON = JSON.parse(response);
+            console.log(actual_JSON);
+        })
+
+        function filterSupplier() {
+            var match = [];
+            var id = document.getElementById('mySelection').value;
+            console.log(id);
+            data.result.forEach(function (arr, i) {
+
+                if (arr.includes(id)) {
+                    console.log(arr);
+                    match.push(arr);
+                }
+            })
+
+            displayTable(match);
+
+        }
+
+
+        function filterPrice() {
+            var match = [];
+            var price = document.getElementById('myprice').value;
+            var Supplier = document.getElementById('mySelection').value
+
+            data.result.forEach(function (arr2, i) {
+                if (arr2.includes(price)) {
+                    match.push(arr2);
+                }
+            })
+            console.log(price);
+            displayTable(match);
+        }
+
+
+
+        function filterutilities() {
+            var match = [];
+            var utilities = document.getElementById('myutilities').value;
+            var buisness = document.getElementById('buisness').value;
+            match.push(data.result[0])
+            var found = false;
+            data.result.forEach(function (arr3, i) {
+                if (!found) {
+                    if (utilities == `I don't know or see my Utility`) {
+                        match.push(['Contact Us at 111-111-1111 so we can help compare plans for you'])
+                        console.log(match);
+                        found = true;
+                        match.shift();
+                    } else {
+                        if (buisness == '') {
+                            if (arr3.includes(utilities)) {
+                                match.push(arr3);
+                            }
+                        } else {
+                            if (arr3.includes(utilities) && arr3.includes(buisness)) {
+                                match.push(arr3);
+                            }
+                        }
+                    }
+                }
+            })
+
+            console.info(match);
+            displayTable(match);
+        }
+
+        function filterbuisness() {
+            var match = [];
+            var buisness = document.getElementById('buisness').value;
+            var utilities = document.getElementById('myutilities').value;
+            match.push(data.result[0])
+            data.result.forEach(function (arr3, i) {
+
+                if (utilities == '') {
+                    if (arr3.includes(buisness)) {
+                        match.push(arr3);
+                    }
+                } else if (arr3.includes(utilities) && arr3.includes(buisness)) {
+                    match.push(arr3);
+                }
+
+                // else {
+                //     match.push(['does not exist'])
+                // }
+            })
+            console.log(match);
+            displayTable(match);
+        }
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
